@@ -9,6 +9,7 @@ import typeDefs from './graphql/schema';
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const employeeRouter = require('./routes/employee');
 
 const models = require('./database/models');
 
@@ -26,8 +27,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const initialRoute = '/api';
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(initialRoute + '/users', usersRouter);
+app.use(initialRoute + '/employee', employeeRouter);
 
 // APOLLO EXPRESS SERVER
 const server = new ApolloServer({
