@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
 	const Employee = sequelize.define(
 		'Employee',
@@ -18,8 +19,20 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{}
 	);
+
 	Employee.associate = function(models) {
-		// associations can be defined here
+		Employee.belongsToMany(models.Department, {
+			through: 'EmployeeDepartment',
+			as: 'departments',
+			foreignKey: 'employeeId',
+		});
+
+		Employee.belongsToMany(models.Role, {
+			through: 'EmployeeRole',
+			as: 'roles',
+			foreignKey: 'employeeId',
+		});
 	};
+
 	return Employee;
 };
