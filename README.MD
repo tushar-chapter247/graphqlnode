@@ -2,6 +2,9 @@
 
 ## STEPS FOR INITIALIZING MODELS FOR EMPLOYEES WITH MANY TO MANY RELATION WITH DEPARTMENT AND ROLES
 
+Follow this link for more refefence:
+https://github.com/the-road-to-graphql/fullstack-apollo-express-postgresql-boilerplate
+
 ### sequelize model:create --name Employee --attributes firstName:string,surname:string,email:string,contact:string,username:string,password:string
 
 ### sequelize model:create --name Department --attributes name:string
