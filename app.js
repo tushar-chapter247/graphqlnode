@@ -12,6 +12,8 @@ import jwt from 'jsonwebtoken';
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const employeeRouter = require('./routes/employee');
+const departmentRouter = require('./routes/department');
+const roleRouter = require('./routes/role');
 
 const models = require('./database/models');
 
@@ -33,6 +35,8 @@ const initialRoute = '/api';
 app.use('/', indexRouter);
 app.use(initialRoute + '/users', usersRouter);
 app.use(initialRoute + '/employee', employeeRouter);
+app.use(initialRoute + '/department', departmentRouter);
+app.use(initialRoute + '/role', roleRouter);
 
 const getMe = async req => {
 	const token = req.headers['x-token'];
