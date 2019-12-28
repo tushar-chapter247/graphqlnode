@@ -4,8 +4,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import typeDefs from './graphql/schema';
+import resolvers from './graphql/resolvers';
+import jwt from 'jsonwebtoken';
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -32,9 +34,39 @@ app.use('/', indexRouter);
 app.use(initialRoute + '/users', usersRouter);
 app.use(initialRoute + '/employee', employeeRouter);
 
+const getMe = async req => {
+	const token = req.headers['x-token'];
+	if (token) {
+		try {
+			return await jwt.verify(token, process.env.SECRET);
+		} catch (e) {
+			throw new AuthenticationError('Your session expired. Sign in again.');
+		}
+	}
+};
+
 // APOLLO EXPRESS SERVER
 const server = new ApolloServer({
 	typeDefs,
+	resolvers,
+	formatError: error => {
+		const message = error.message
+			.replace('SequelizeValidationError: ', '')
+			.replace('Validation error: ', '');
+
+		return {
+			...error,
+			message,
+		};
+	},
+	context: async ({ req }) => {
+		const me = await getMe(req);
+		return {
+			models,
+			me,
+			secret: process.env.SECRET,
+		};
+	},
 });
 server.applyMiddleware({ app, path: graphQlPath });
 
