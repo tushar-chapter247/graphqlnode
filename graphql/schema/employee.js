@@ -22,6 +22,7 @@ const typeDefs = gql`
 
 	extend type Mutation {
 		login(email: String, password: String): LoginResponse!
+		empVerifyToken(token: String): VerifyEmpTokenResponse!
 		addEmployee(
 			firstName: String!
 			surname: String!
@@ -36,6 +37,12 @@ const typeDefs = gql`
 		success: Boolean!
 		message: String
 		token: String!
+	}
+
+	type VerifyEmpTokenResponse {
+		success: Boolean!
+		message: String
+		employee: Employee!
 	}
 
 	type AddEmployeeResponse {

@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
-import { AuthenticationError, UserInputError } from 'apollo-server';
 
 const createHashPassword = async password => {
 	const hashedPassword = await new Promise((resolve, reject) => {
@@ -12,13 +11,6 @@ const createHashPassword = async password => {
 	});
 
 	return hashedPassword;
-};
-
-const createToken = async (user, secret, expiresIn) => {
-	const { id, email } = user;
-	return await jwt.sign({ id, email }, secret, {
-		expiresIn,
-	});
 };
 
 export default {
@@ -105,13 +97,9 @@ export default {
 					};
 				}
 
-				const token = jwt.sign(
-					{ id: empRec.id, randomKey: salt },
-					process.env.SECRET,
-					{
-						expiresIn: 86400,
-					}
-				);
+				const token = jwt.sign({ id: empRec.id, randomKey: salt }, secret, {
+					expiresIn: 86400,
+				});
 
 				return {
 					success: true,
@@ -123,6 +111,37 @@ export default {
 					success: false,
 					message: error.message || 'Employee login failed',
 					token: '',
+				};
+			}
+		},
+
+		empVerifyToken: async (parent, { token }, { models, secret }, info) => {
+			try {
+				if (token) {
+					try {
+						const res = jwt.verify(token, process.env.SECRET);
+						if (res && res.id) {
+							const employee = await models.Employee.findByPk(res.id);
+							return {
+								success: true,
+								message: 'Verification success',
+								employee: { ...employee.dataValues },
+							};
+						}
+
+						throw {
+							success: false,
+							message: 'Verification failed',
+						};
+					} catch (err) {
+						throw new Error('Invalid auth id passed');
+					}
+				}
+			} catch (error) {
+				return {
+					success: false,
+					message: error.message || 'Employee verify failed',
+					employee: {},
 				};
 			}
 		},

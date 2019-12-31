@@ -40,10 +40,10 @@ app.use(initialRoute + '/department', departmentRouter);
 app.use(initialRoute + '/role', roleRouter);
 
 const getMe = async req => {
-	const token = req.headers['x-token'];
+	const token = req.headers['token'];
 	if (token) {
 		try {
-			return await jwt.verify(token, process.env.SECRET);
+			return jwt.verify(token, process.env.SECRET);
 		} catch (e) {
 			throw new AuthenticationError('Your session expired. Sign in again.');
 		}
