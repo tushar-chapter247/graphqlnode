@@ -35,7 +35,6 @@ const typeDefs = gql`
 	type LoginResponse {
 		success: Boolean!
 		message: String
-		employee: Employee!
 		token: String!
 	}
 
