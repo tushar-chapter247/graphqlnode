@@ -1,0 +1,7 @@
+* PARTIAL SEARCH ON FULL TEXT SEARCH *
+SELECT name AS country_name FROM pyc_countries WHERE to_tsvector(name) @@ to_tsquery('ge:*')
+// result => country_name(South Georgia, Georgia, Germany)
+Also make sure to convert spaces to +. For example, if you are searching for squire knight, then it will be
+SELECT title FROM movies WHERE to_tsvector(title) @@ to_tsquery('squire+knight:*')
+* PARTIAL SEARCH ON FULL TEXT SEARCH *
+
